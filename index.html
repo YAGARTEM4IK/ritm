@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101116">
+  <meta name="description" content="Ритм — бесплатный помощник студенту для управления учебной нагрузкой и дедлайнами.">
+  <title>Ритм — учебная нагрузка под контролем</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Ритм — главная">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        <span>ритм<span class="brand-dot">.</span></span>
+      </a>
+      <div class="side-label">РАБОЧЕЕ ПРОСТРАНСТВО</div>
+      <nav class="nav" aria-label="Основная навигация">
+        <button class="nav-item active" data-view="overview"><span class="nav-icon">◫</span> Обзор</button>
+        <button class="nav-item" data-view="tasks"><span class="nav-icon">☷</span> Все задания <span class="nav-count" id="nav-task-count">0</span></button>
+        <button class="nav-item" data-view="focus"><span class="nav-icon">◎</span> Что делать сейчас</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="side-tip">
+          <span class="tip-spark">✳</span>
+          <p class="tip-title">Маленький шаг — тоже прогресс.</p>
+          <p class="tip-copy">Не обязательно решить всё сегодня. Начни с самого важного.</p>
+        </div>
+        <div class="local-status"><span class="status-dot"></span> Данные хранятся на этом устройстве</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark"><span></span><span></span><span></span></span> ритм<span class="brand-dot">.</span></div>
+        <div class="topbar-spacer"></div>
+        <span class="today-label" id="today-label"></span>
+        <button class="avatar" aria-label="Локальный профиль">Я</button>
+      </header>
+
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow" id="greeting-eyebrow">ТВОЙ УЧЕБНЫЙ РИТМ</p>
+          <h1 id="page-title">Привет. Разберёмся по порядку.</h1>
+          <p class="subtitle" id="page-subtitle">Сначала увидим нагрузку — потом выберем следующий шаг.</p>
+        </div>
+        <button class="button button-primary" id="open-add"><span class="plus">＋</span> Добавить задание</button>
+      </section>
+
+      <section class="view active" id="view-overview">
+        <div class="metric-grid">
+          <article class="metric-card">
+            <div class="metric-top"><span>Активные задания</span><span class="metric-icon violet">☷</span></div>
+            <div class="metric-value" id="metric-active">0</div>
+            <div class="metric-foot" id="metric-active-foot">Пока всё чисто</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>На ближайшие 7 дней</span><span class="metric-icon blue">◷</span></div>
+            <div class="metric-value" id="metric-week">0</div>
+            <div class="metric-foot">Задания со сроком на неделе</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>Под риском</span><span class="metric-icon coral">↗</span></div>
+            <div class="metric-value" id="metric-risk">0</div>
+            <div class="metric-foot" id="metric-risk-foot">Держим ситуацию под контролем</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>Уже выполнено</span><span class="metric-icon green">✓</span></div>
+            <div class="metric-value" id="metric-done">0<span class="metric-small">%</span></div>
+            <div class="progress-track"><span id="completion-bar"></span></div>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel task-panel">
+            <div class="panel-heading">
+              <div><h2>Ближайшие задания</h2><p>То, что стоит держать в поле зрения</p></div>
+              <button class="text-button" data-goto="tasks">Все задания <span>↗</span></button>
+            </div>
+            <div id="upcoming-list" class="task-list"></div>
+          </section>
+          <section class="panel focus-panel">
+            <div class="panel-heading"><div><h2>Следующий шаг</h2><p>Рекомендация по текущей нагрузке</p></div><span class="focus-symbol">✳</span></div>
+            <div id="recommendation" class="recommendation"></div>
+            <button class="button button-secondary full-width" data-goto="focus">Открыть режим фокуса <span>→</span></button>
+          </section>
+        </div>
+        <section class="panel load-panel">
+          <div class="panel-heading">
+            <div><h2>Нагрузка по срокам</h2><p>Сколько часов работы запланировано на ближайшие дни</p></div>
+            <span class="chart-legend"><span></span> Оценка времени</span>
+          </div>
+          <div id="load-chart" class="load-chart" aria-label="Диаграмма нагрузки по дням"></div>
+        </section>
+      </section>
+
+      <section class="view" id="view-tasks">
+        <div class="toolbar">
+          <div class="search-wrap"><span>⌕</span><input id="task-search" type="search" placeholder="Найти задание или предмет..." aria-label="Поиск заданий"></div>
+          <select id="task-filter" aria-label="Фильтр заданий">
+            <option value="all">Все задания</option><option value="active">Активные</option><option value="risk">Под риском</option><option value="done">Выполненные</option>
+          </select>
+        </div>
+        <section class="panel all-tasks-panel">
+          <div class="panel-heading"><div><h2>Твои задания</h2><p id="task-list-subtitle">Управляй списком без лишнего шума</p></div></div>
+          <div id="all-task-list" class="task-list"></div>
+        </section>
+      </section>
+
+      <section class="view" id="view-focus">
+        <div class="focus-intro">
+          <div class="focus-orb">◎</div>
+          <div><p class="eyebrow">РЕЖИМ ФОКУСА</p><h2>Не всё сразу. Один шаг за раз.</h2><p>Ритм подберёт задачу по сроку, объёму и приоритету.</p></div>
+        </div>
+        <div id="focus-task-area"></div>
+        <section class="panel focus-method">
+          <div class="method-icon">✳</div><div><h3>Правило одного шага</h3><p>Если задание кажется большим, не пытайся закончить его мысленно целиком. Открой материал, составь план или сделай первые 10 минут работы. Начало снижает сопротивление.</p></div>
+        </section>
+      </section>
+
+      <footer class="footer"><span>ритм. <span class="footer-muted">Учёба без завала.</span></span><span>Бесплатно · Без регистрации · Данные на твоём устройстве</span></footer>
+    </main>
+  </div>
+
+  <dialog id="task-dialog" class="task-dialog">
+    <form id="task-form">
+      <div class="dialog-heading"><div><p class="eyebrow">НОВОЕ В СПИСКЕ</p><h2 id="dialog-title">Добавить задание</h2></div><button type="button" class="icon-button" id="close-dialog" aria-label="Закрыть">×</button></div>
+      <input type="hidden" id="task-id">
+      <label>Что нужно сделать?<input id="task-title" required maxlength="100" placeholder="Например, подготовить доклад"></label>
+      <label>Предмет или категория<input id="task-subject" maxlength="60" placeholder="Например, История"></label>
+      <div class="form-row">
+        <label>Дедлайн<input id="task-due" type="date" required></label>
+        <label>Сколько часов займёт?
+          <select id="task-hours"><option value="0.5">30 минут</option><option value="1" selected>1 час</option><option value="2">2 часа</option><option value="3">3 часа</option><option value="4">4 часа</option><option value="6">6 часов</option><option value="8">8+ часов</option></select>
+        </label>
+      </div>
+      <label>Приоритет
+        <div class="priority-options">
+          <label class="priority-option"><input type="radio" name="priority" value="low"><span>Можно позже</span></label>
+          <label class="priority-option"><input type="radio" name="priority" value="normal" checked><span>Обычно</span></label>
+          <label class="priority-option"><input type="radio" name="priority" value="high"><span>Важно</span></label>
+        </div>
+      </label>
+      <label>Первый маленький шаг <span class="optional">необязательно</span><input id="task-step" maxlength="120" placeholder="Например, найти 3 источника"></label>
+      <div class="form-error" id="form-error" role="alert"></div>
+      <div class="dialog-actions"><button type="button" class="button button-secondary" id="cancel-dialog">Отмена</button><button type="submit" class="button button-primary">Сохранить задание</button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
